@@ -15,11 +15,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import com.peterfarlow.healthleaksampleapplication.ui.theme.HealthLeakSampleApplicationTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -42,11 +46,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val scope = rememberCoroutineScope()
+                    val appContext = LocalContext.current.applicationContext
                     Column(modifier = Modifier.fillMaxSize()) {
                         Button(
                             onClick = {
-                                println("click1")
-                                healthConnectPermissionsLauncher.launch(HealthLeakSampleApplication.permissions)
+                                scope.launch {
+                                    println("click1")
+                                    //healthConnectPermissionsLauncher.launch(HealthLeakSampleApplication.permissions)
+                                    //println(HealthConnectClient.sdkStatus(appContext))
+                                    println(HealthConnectClient.getOrCreate(appContext).permissionController.getGrantedPermissions())
+                                }
                             }
                         ) {
                             Text(text = "Grant health connect permissions")
